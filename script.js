@@ -1,9 +1,10 @@
 let todosContratos = [];
 
 /**
- * Função que parseia um texto CSV (respeitando aspas) e retorna um array de linhas,
- * onde cada linha é um array de valores. Exemplo:
- *   parseCSV('"A,B",123,"C""D",E')  →  [ [ "A,B", "123", 'C"D', "E" ] ]
+ * parseCSV(textoCSV):
+ *   Recebe todo o conteúdo do CSV (como string) e retorna um array
+ *   de “linhas”, onde cada linha é um array de campos. 
+ *   Essa função respeita aspas para valores que contenham vírgulas internas.
  */
 function parseCSV(textoCSV) {
   const linhas = [];
@@ -15,7 +16,6 @@ function parseCSV(textoCSV) {
     let campo = '';
     let dentroAspas = false;
 
-    // Percorre até o fim da linha
     while (i < chars.length) {
       const c = chars[i];
 
@@ -25,46 +25,42 @@ function parseCSV(textoCSV) {
         i++;
       }
       else if (c === '"' && dentroAspas) {
-        // Pode ser fim de aspas ou aspas escapada
+        // Pode ser fim de aspas ou aspas escapada ("" dentro de "")
         if (i + 1 < chars.length && chars[i + 1] === '"') {
-          // aspas escapada: adiciona uma " e pula 1 caractere
           campo += '"';
           i += 2;
         } else {
-          // fim do trecho entre aspas
           dentroAspas = false;
           i++;
         }
       }
       else if (c === ',' && !dentroAspas) {
-        // vírgula fora de aspas: separador de campo
+        // Vírgula fora de aspas: separador de campo
         linha.push(campo);
         campo = '';
         i++;
       }
       else if ((c === '\r' || c === '\n') && !dentroAspas) {
-        // fim da linha (pode ser \r\n ou só \n ou só \r)
+        // Fim de linha (\r, \n ou \r\n)
         linha.push(campo);
         campo = '';
-        // pular todos \r ou \n seguidos
         while (i < chars.length && (chars[i] === '\r' || chars[i] === '\n')) {
           i++;
         }
         break;
       }
       else {
-        // caractere qualquer (dentro ou fora de aspas)
         campo += c;
         i++;
       }
     }
 
-    // se chegamos ao fim do texto sem encontrar \n, ainda sobra campo
+    // Se chegou ao fim do texto sem quebra de linha, ainda há um campo
     if (campo !== '' || chars[i - 1] === ',') {
       linha.push(campo);
     }
 
-    // ignora linhas em branco vazias (sem valor algum)
+    // Ignorar linhas totalmente vazias
     const todosVazios = linha.every(val => val === '');
     if (!todosVazios) {
       linhas.push(linha);
@@ -72,6 +68,14 @@ function parseCSV(textoCSV) {
   }
 
   return linhas;
+}
+
+/**
+ * removeAcentos(str):
+ *   Retira acentos de uma string (NFD + regex).
+ */
+function removeAcentos(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
 function carregarContratos(lista) {
@@ -122,38 +126,38 @@ document.getElementById("filtro").addEventListener("input", e => {
   carregarContratos(filtrados);
 });
 
-// 👉 URL pública do CSV da aba "Contratos", gerada em "Publicar na web"
+// ─────────────────────────────────────────────────────────────────────
+// ► URL pública do CSV da sua aba "Contratos" (publicada em "Publicar na web → CSV")
 const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT4-Byvx6MozOO0BkbOT4V60ekea-cr0Cywf_8wvHSEno2RUW8luLJG3C5RpSjKZK8tZx8GFaXtjVhg/pub?gid=0&single=true&output=csv";
 
 fetch(URL_CSV)
   .then(response => response.text())
   .then(csvText => {
-    // Primeiro passo: quebrar em linhas e colunas com nosso parser
+    // 1) Quebrar em linhas/colunas, respeitando aspas
     const linhas = parseCSV(csvText.trim());
-
     if (linhas.length < 2) {
-      console.error("CSV parece vazio ou não contém dados");
+      console.error("CSV parece vazio ou não contém dados suficientes.");
       return;
     }
 
-    // A primeira linha é o cabeçalho real:
-    //   ["Apelido", "Valor", "Link PDF", "Link Planilha", "Data", "Endereço", "Status"]
-    const cabeçalhoOriginal = linhas[0].map(col =>
-      col.trim().toLowerCase().replace(/\s/g, '')
+    // 2) A primeira linha é o cabeçalho:
+    //    ["Apelido","Valor","Link PDF","Link Planilha","Data","Endereço","Status"]
+    const cabeçalhosOriginais = linhas[0].map(col =>
+      removeAcentos(col.trim().toLowerCase()).replace(/\s/g, '')
     );
-    // Exemplo de cabeçalhoOriginal: ["apelido","valor","linkpdf","linkplanilha","data","endereco","status"]
+    //    Exemplo de cabeçalhosOriginais: ["apelido","valor","linkpdf","linkplanilha","data","endereco","status"]
 
-    // As demais linhas são os dados:
-    const dadosLinhas = linhas.slice(1);
+    // 3) Demais linhas são os dados
+    const linhasDados = linhas.slice(1);
 
-    // Montar array de objetos, mapeando por nome de coluna, não por índice fixo
-    const contratos = dadosLinhas.map(colunas => {
+    // 4) Montar array de objetos, mapeando pelo nome de cada coluna (sem depender da ordem fixa)
+    const contratos = linhasDados.map(fields => {
       const obj = {};
-      cabeçalhoOriginal.forEach((chave, idx) => {
-        // “colunas[idx]” já está sem aspas externas (parser trata isso)
-        obj[chave] = colunas[idx] || "";
+      cabeçalhosOriginais.forEach((chave, idx) => {
+        // Cada campo já está sem aspas externas (parser tratou isso)
+        obj[chave] = fields[idx] || "";
       });
-      // Retornar exatamente os campos que vamos usar
+      // Retorna apenas os 7 campos que vamos utilizar
       return {
         apelido: obj.apelido,
         valor: obj.valor,
