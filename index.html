@@ -5,6 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestão de Contratos</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Caso você ainda não tenha um style.css, adicione pelo menos esta classe: */
+    .hidden {
+      display: none;
+    }
+    /* Exemplo básico de estilo para tabela: */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    input#filtro {
+      padding: 8px;
+      width: 300px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+    button {
+      padding: 6px 12px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+    #detalhes {
+      border: 1px solid #ccc;
+      padding: 15px;
+      background: #f9f9f9;
+      margin-top: 20px;
+    }
+    #detalhes h2 {
+      margin-top: 0;
+    }
+    #detalhes a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    #detalhes a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <h1>Gestão de Contratos</h1>
@@ -23,7 +83,7 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Gerado dinamicamente pelo script -->
+      <!-- As linhas serão geradas dinamicamente pelo script.js -->
     </tbody>
   </table>
 
@@ -34,11 +94,14 @@
     <p><strong>Data:</strong> <span id="det-data"></span></p>
     <p><strong>Endereço:</strong> <span id="det-endereco"></span></p>
     <p><strong>Status:</strong> <span id="det-status"></span></p>
-    <p><a id="link-planilha" href="#" target="_blank">📄 Ver Planilha</a></p>
-    <p><a id="link-pdf" href="#" target="_blank">📑 Ver PDF</a></p>
+    <p>
+      <a id="link-planilha" href="#" target="_blank">📄 Ver Planilha</a><br>
+      <a id="link-pdf" href="#" target="_blank">📑 Ver PDF</a>
+    </p>
     <button onclick="fecharDetalhes()">Fechar</button>
   </div>
 
+  <!-- Já deve existir o script.js na mesma pasta -->
   <script src="script.js"></script>
 </body>
 </html>
