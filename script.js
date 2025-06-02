@@ -55,14 +55,13 @@ fetch(URL_CSV)
   .then(response => response.text())
   .then(csvText => {
     const linhas = csvText.trim().split("\n");
-    const cabecalhos = linhas[0].split(",");
+    const cabecalhos = linhas[0].split(",").map(c => c.trim().toLowerCase().replace(/\s/g, ''));
 
     const contratos = linhas.slice(1).map(linha => {
       const valores = linha.split(",");
       const contrato = {};
       cabecalhos.forEach((coluna, i) => {
-        const chave = coluna.trim().toLowerCase().replace(/\s/g, '');
-        contrato[chave] = valores[i];
+        contrato[coluna] = valores[i]?.replace(/^"|"$/g, "").trim(); // remove aspas e espaços
       });
       return contrato;
     });
