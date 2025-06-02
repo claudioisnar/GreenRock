@@ -48,7 +48,6 @@ document.getElementById("filtro").addEventListener("input", e => {
   carregarContratos(filtrados);
 });
 
-// 🔄 Substitua aqui pela URL pública CSV da aba "Contratos"
 const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT4-Byvx6MozOO0BkbOT4V60ekea-cr0Cywf_8wvHSEno2RUW8luLJG3C5RpSjKZK8tZx8GFaXtjVhg/pub?gid=0&single=true&output=csv";
 
 fetch(URL_CSV)
@@ -60,10 +59,21 @@ fetch(URL_CSV)
     const contratos = linhas.slice(1).map(linha => {
       const valores = linha.split(",");
       const contrato = {};
+
       cabecalhos.forEach((coluna, i) => {
-        contrato[coluna] = valores[i]?.replace(/^"|"$/g, "").trim(); // remove aspas e espaços
+        const valorLimpo = valores[i]?.replace(/^"|"$/g, "").trim();
+        contrato[coluna] = valorLimpo;
       });
-      return contrato;
+
+      return {
+        apelido: contrato.apelido,
+        valor: contrato.valor,
+        data: contrato.data,
+        endereco: contrato.endereco,
+        status: contrato.status,
+        linkpdf: contrato.linkpdf,
+        linkplanilha: contrato.linkplanilha
+      };
     });
 
     carregarContratos(contratos);
