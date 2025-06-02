@@ -9,6 +9,9 @@ function carregarContratos(lista) {
     tr.innerHTML = `
       <td>${contrato.apelido}</td>
       <td>${contrato.valor || "R$ - indefinido"}</td>
+      <td>${contrato.data || "-"}</td>
+      <td>${contrato.endereco || "-"}</td>
+      <td>${contrato.status || "-"}</td>
       <td><button onclick="verDetalhes(${index})">Ver Detalhes</button></td>
     `;
     tbody.appendChild(tr);
@@ -21,6 +24,9 @@ function verDetalhes(index) {
   const contrato = todosContratos[index];
   document.getElementById("det-apelido").textContent = contrato.apelido;
   document.getElementById("det-valor").textContent = contrato.valor || "R$ - indefinido";
+  document.getElementById("det-data").textContent = contrato.data || "-";
+  document.getElementById("det-endereco").textContent = contrato.endereco || "-";
+  document.getElementById("det-status").textContent = contrato.status || "-";
   document.getElementById("link-planilha").href = contrato.linkPlanilha;
   document.getElementById("link-pdf").href = contrato.linkPDF;
   document.getElementById("detalhes").classList.remove("hidden");
@@ -34,13 +40,16 @@ document.getElementById("filtro").addEventListener("input", e => {
   const termo = e.target.value.toLowerCase();
   const filtrados = todosContratos.filter(c =>
     c.apelido.toLowerCase().includes(termo) ||
-    (c.valor && c.valor.toLowerCase().includes(termo))
+    (c.valor && c.valor.toString().toLowerCase().includes(termo)) ||
+    (c.data && c.data.toLowerCase().includes(termo)) ||
+    (c.endereco && c.endereco.toLowerCase().includes(termo)) ||
+    (c.status && c.status.toLowerCase().includes(termo))
   );
   carregarContratos(filtrados);
 });
 
-// Substitua pela sua URL de Apps Script publicada
-fetch("https://script.google.com/macros/s/AKfycbyhLizue36A4oj2kwlYnfOepafsHVWda94lHTqsCJ9C_pK9SGpKqlVEdLJym9QlUgAf/exec")
+// Substitua pela sua URL publicada do Apps Script
+fetch("https://script.google.com/macros/s/SEU_ID_DO_WEBAPP/exec")
   .then(response => response.json())
   .then(contratos => {
     carregarContratos(contratos);
