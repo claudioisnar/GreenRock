@@ -4,41 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contratos Imobiliários</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Contratos de Aquisição Imobiliária</h1>
+  <h1>Gestão de Contratos</h1>
 
-    <input type="text" id="filtro" placeholder="Buscar contrato...">
+  <input type="text" id="filtro" placeholder="Filtrar contratos...">
 
-    <table id="tabela-contratos">
-     <thead>
-  <tr>
-    <th>Apelido</th>
-    <th>Valor</th>
-    <th>Data</th>
-    <th>Cidade</th>
-    <th>Status</th>
-    <th>Ações</th>
-  </tr>
-</thead>
-      <tbody></tbody>
-    </table>
+  <table id="tabela-contratos">
+    <thead>
+      <tr>
+        <th>Apelido</th>
+        <th>Valor</th>
+        <th>Data</th>
+        <th>Endereço</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Linhas geradas pelo script.js -->
+    </tbody>
+  </table>
 
-    <div id="detalhes" class="detalhes hidden">
-      <h2>Detalhes do Contrato</h2>
-      <p><strong>Apelido:</strong> <span id="det-apelido"></span></p>
-      <p><strong>Valor:</strong> <span id="det-valor"></span></p>
-      <p><strong>Data:</strong> <span id="det-data"></span></p>
-      <p><strong>Endereço:</strong> <span id="det-endereco"></span></p>
-      <p><strong>Status:</strong> <span id="det-status"></span></p>
-      <p>
-        <a id="link-planilha" href="#" target="_blank">📊 Ver Planilha</a><br>
-        <a id="link-pdf" href="#" target="_blank">📄 Ver Contrato (PDF)</a>
-      </p>
-      <button onclick="fecharDetalhes()">Fechar</button>
-    </div>
+  <div id="detalhes" class="hidden">
+    <h2>Detalhes do Contrato</h2>
+    <p><strong>Apelido:</strong> <span id="det-apelido"></span></p>
+    <p><strong>Valor:</strong> <span id="det-valor"></span></p>
+    <p><strong>Data:</strong> <span id="det-data"></span></p>
+    <p><strong>Endereço:</strong> <span id="det-endereco"></span></p>
+    <p><strong>Status:</strong> <span id="det-status"></span></p>
+    <p><a id="link-planilha" href="#" target="_blank">📄 Ver Planilha</a></p>
+    <p><a id="link-pdf" href="#" target="_blank">📑 Ver PDF</a></p>
+    <button onclick="fecharDetalhes()">Fechar</button>
   </div>
 
   <script src="script.js"></script>
