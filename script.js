@@ -40,7 +40,7 @@ document.getElementById("filtro").addEventListener("input", e => {
 });
 
 // Substitua pela sua URL de Apps Script publicada
-fetch("https://script.google.com/macros/s/AKfycbyhUUgaMCcr1UTAtQQBARndADH4QkXmJR_aQ2gYV_5rMqp_ebpdgZnvCaRKi-S2ipA/exec")
+fetch("https://script.google.com/macros/s/AKfycbyhLizue36A4oj2kwlYnfOepafsHVWda94lHTqsCJ9C_pK9SGpKqlVEdLJym9QlUgAf/exec")
   .then(response => response.json())
   .then(contratos => {
     carregarContratos(contratos);
