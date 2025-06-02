@@ -7,11 +7,11 @@ function carregarContratos(lista) {
   lista.forEach((contrato, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${contrato.apelido}</td>
-      <td>${contrato.valor || "R$ - indefinido"}</td>
-      <td>${contrato.data || "-"}</td>
-      <td>${contrato.endereco || "-"}</td>
-      <td>${contrato.status || "-"}</td>
+      <td>${contrato.apelido || ""}</td>
+      <td>${contrato.valor || ""}</td>
+      <td>${contrato.data || ""}</td>
+      <td>${contrato.endereco || ""}</td>
+      <td>${contrato.status || ""}</td>
       <td><button onclick="verDetalhes(${index})">Ver Detalhes</button></td>
     `;
     tbody.appendChild(tr);
@@ -22,13 +22,13 @@ function carregarContratos(lista) {
 
 function verDetalhes(index) {
   const contrato = todosContratos[index];
-  document.getElementById("det-apelido").textContent = contrato.apelido;
-  document.getElementById("det-valor").textContent = contrato.valor || "R$ - indefinido";
-  document.getElementById("det-data").textContent = contrato.data || "-";
-  document.getElementById("det-endereco").textContent = contrato.endereco || "-";
-  document.getElementById("det-status").textContent = contrato.status || "-";
-  document.getElementById("link-planilha").href = contrato.linkPlanilha;
-  document.getElementById("link-pdf").href = contrato.linkPDF;
+  document.getElementById("det-apelido").textContent = contrato.apelido || "";
+  document.getElementById("det-valor").textContent = contrato.valor || "";
+  document.getElementById("det-data").textContent = contrato.data || "";
+  document.getElementById("det-endereco").textContent = contrato.endereco || "";
+  document.getElementById("det-status").textContent = contrato.status || "";
+  document.getElementById("link-planilha").href = contrato.linkplanilha || "#";
+  document.getElementById("link-pdf").href = contrato.linkpdf || "#";
   document.getElementById("detalhes").classList.remove("hidden");
 }
 
@@ -39,21 +39,15 @@ function fecharDetalhes() {
 document.getElementById("filtro").addEventListener("input", e => {
   const termo = e.target.value.toLowerCase();
   const filtrados = todosContratos.filter(c =>
-    c.apelido.toLowerCase().includes(termo) ||
-    (c.valor && c.valor.toString().toLowerCase().includes(termo)) ||
-    (c.data && c.data.toLowerCase().includes(termo)) ||
-    (c.endereco && c.endereco.toLowerCase().includes(termo)) ||
-    (c.status && c.status.toLowerCase().includes(termo))
+    (c.apelido || "").toLowerCase().includes(termo) ||
+    (c.valor || "").toLowerCase().includes(termo) ||
+    (c.status || "").toLowerCase().includes(termo)
   );
   carregarContratos(filtrados);
 });
 
-// Substitua pela sua URL publicada do Apps Script
-fetch("https://script.google.com/macros/s/SEU_ID_DO_WEBAPP/exec")
+// 🔗 SUBSTITUA pela URL do seu Apps Script publicado:
+fetch("https://script.google.com/macros/s/AKfycbzO-xrMMfrcBljhPTHnMHhChyYrzrohOYpxfOn-th5QWjvvhnjpE1hveXhgZPLyBuU/exec")
   .then(response => response.json())
-  .then(contratos => {
-    carregarContratos(contratos);
-  })
-  .catch(erro => {
-    console.error("Erro ao carregar contratos:", erro);
-  });
+  .then(contratos => carregarContratos(contratos))
+  .catch(erro => console.error("Erro ao carregar contratos:", erro));
