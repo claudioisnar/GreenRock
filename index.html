@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contratos Imobiliários</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Contratos de Aquisição Imobiliária</h1>
+
+    <input type="text" id="filtro" placeholder="Buscar contrato por apelido ou valor...">
+
+    <table id="tabela-contratos">
+      <thead>
+        <tr>
+          <th>Apelido</th>
+          <th>Valor</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div id="detalhes" class="detalhes hidden">
+      <h2>Detalhes do Contrato</h2>
+      <p><strong>Apelido:</strong> <span id="det-apelido"></span></p>
+      <p><strong>Valor:</strong> <span id="det-valor"></span></p>
+      <p>
+        <a id="link-planilha" href="#" target="_blank">📊 Ver Planilha</a><br>
+        <a id="link-pdf" href="#" target="_blank">📄 Ver Contrato (PDF)</a>
+      </p>
+      <button onclick="fecharDetalhes()">Fechar</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
