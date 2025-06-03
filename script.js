@@ -51,7 +51,11 @@ function parseCSV(textoCSV) {
     }
   }
 
-  return linhas;
+ return linhas;Add commentMore actions
+}
+
+function removeAcentos(str) {
+  return str.normalize("NFD").replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 }
 
 function carregarContratos(lista) {
@@ -61,87 +65,92 @@ function carregarContratos(lista) {
   lista.forEach((contrato, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${contrato.apelido || "-"}</td>
-      <td>${contrato.valor || "-"}</td>
-      <td>${contrato.data || "-"}</td>
-      <td>${contrato.endereco || "-"}</td>
+      <td>${contrato.nickname || "-"}</td>
+      <td>${contrato.purchaseprice || "-"}</td>
+      <td>${contrato.date || "-"}</td>
+      <td>${contrato.adress || "-"}</td>
       <td>${contrato.status || "-"}</td>
       <td><button onclick="verDetalhes(${index})">Detail</button></td>
     `;
-    tbody.appendChild(tr);
-  });
-
-  todosContratos = lista;
-}
+@@ -80,25 +76,13 @@ function carregarContratos(lista) {
 
 function verDetalhes(index) {
   const contrato = todosContratos[index];
-  document.getElementById("det-apelido").textContent = contrato.apelido || "-";
-  document.getElementById("det-valor").textContent = contrato.valor || "-";
-  document.getElementById("det-data").textContent = contrato.data || "-";
-  document.getElementById("det-endereco").textContent = contrato.endereco || "-";
+
+  document.getElementById("det-nickname").textContent = contrato.nickname || "-";
+  document.getElementById("det-purchaseprice").textContent = contrato.purchaseprice || "-";
+  document.getElementById("det-date").textContent = contrato.date || "-";
+  document.getElementById("det-adress").textContent = contrato.adress || "-";
   document.getElementById("det-status").textContent = contrato.status || "-";
+  document.getElementById("det-incentive").textContent = contrato.incentive || "-";
+  document.getElementById("det-financedprice").textContent = contrato.financedprice || "-";
+  document.getElementById("det-downpayment").textContent = contrato.downpayment || "-";
+  document.getElementById("det-financedamount").textContent = contrato.financedamount || "-";
+  document.getElementById("det-closingcosts").textContent = contrato.closingcosts || "-";
+  document.getElementById("det-acquisitionexpense").textContent = contrato.acquisitionexpense || "-";
+  document.getElementById("det-interestrateyear").textContent = contrato.interestrateyear || "-";
+  document.getElementById("det-terminyearloan").textContent = contrato.terminyearloan || "-";
+  document.getElementById("det-mortagepayment").textContent = contrato.mortagepayment || "-";
+
   document.getElementById("link-planilha").href = contrato.linkplanilha || "#";
   document.getElementById("link-pdf").href = contrato.linkpdf || "#";
+
   document.getElementById("detalhes").classList.remove("hidden");
 }
 
-function fecharDetalhes() {
-  document.getElementById("detalhes").classList.add("hidden");
+@@ -107,12 +91,16 @@ function fecharDetalhes() {
 }
 
 document.getElementById("filtro").addEventListener("input", e => {
-  const termo = e.target.value.toLowerCase().trim();
-  if (!termo) {
-    carregarContratos(todosContratos);
-    return;
-  }
+  const termo = e.target.value.toLowerCase();
+
+
+
+
   const filtrados = todosContratos.filter(c =>
-    (c.apelido || "").toLowerCase().includes(termo) ||
-    (c.valor || "").toLowerCase().includes(termo) ||
-    (c.data || "").toLowerCase().includes(termo) ||
-    (c.endereco || "").toLowerCase().includes(termo) ||
+    (c.nickname || "").toLowerCase().includes(termo) ||
+    (c.purchaseprice || "").toLowerCase().includes(termo) ||
+    (c.date || "").toLowerCase().includes(termo) ||
+    (c.adress || "").toLowerCase().includes(termo) ||
     (c.status || "").toLowerCase().includes(termo)
   );
   carregarContratos(filtrados);
-});
-
-const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT4-Byvx6MozOO0BkbOT4V60ekea-cr0Cywf_8wvHSEno2RUW8luLJG3C5RpSjKZK8tZx8GFaXtjVhg/pub?gid=0&single=true&output=csv";
-
-fetch(URL_CSV)
+@@ -124,34 +112,29 @@ fetch(URL_CSV)
   .then(response => response.text())
   .then(csvText => {
     const linhas = parseCSV(csvText.trim());
 
     if (linhas.length < 2) {
-      console.error("CSV parece vazio ou não contém dados");
+      console.error("CSV vazio ou sem dados.");
       return;
     }
 
-    const cabecalhoOriginal = linhas[0].map(col =>
-      col.trim().toLowerCase().replace(/\s/g, '')
-    );
+    const cabecalhos = linhas[0].map(col => removeAcentos(col.trim()));
+    const dados = linhas.slice(1);
 
-    const dadosLinhas = linhas.slice(1);
 
-    const contratos = dadosLinhas.map(colunas => {
+
+
+    const contratos = dados.map(colunas => {
       const obj = {};
-      cabecalhoOriginal.forEach((chave, idx) => {
-        obj[chave] = colunas[idx] || "";
+      cabecalhos.forEach((coluna, idx) => {
+        obj[coluna] = colunas[idx] || "";
       });
       return {
-        apelido: obj.apelido,
-        valor: obj.valor,
-        data: obj.data,
-        endereco: obj.adress || obj.endereco || "",
+        nickname: obj.nickname,
+        purchaseprice: obj.purchaseprice,
+        date: obj.date,
+        adress: obj.adress,
         status: obj.status,
+        incentive: obj.incentive,
+        financedprice: obj.financedprice,
+        downpayment: obj.downpayment,
+        financedamount: obj.financedamount,
+        closingcosts: obj.closingcosts,
+        acquisitionexpense: obj.acquisitionexpense,
+        interestrateyear: obj.interestrateyear,
+        terminyearloan: obj.terminyearloan,
+        mortagepayment: obj.mortagepayment,
         linkpdf: obj.linkagreement,
         linkplanilha: obj.linksheet
       };
-    });
-
-    carregarContratos(contratos);
-  })
-  .catch(error => {
-    console.error("Erro ao carregar CSV:", error);
-  });
