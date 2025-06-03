@@ -3,8 +3,8 @@ let todosContratos = [];
 /**
  * parseCSV(textoCSV):
  *   Recebe todo o conteúdo de um CSV (como string) e retorna um array
- *   de “linhas”, onde cada linha é um array de campos. 
- *   Essa função respeita aspas para valores que contenham vírgulas internas.
+ *   de “linhas”, onde cada linha é um array de campos.
+ *   Respeita aspas para valores com vírgulas internas.
  */
 function parseCSV(textoCSV) {
   const linhas = [];
@@ -66,7 +66,7 @@ function parseCSV(textoCSV) {
 
 /**
  * removeAcentos(str):
- *   Retira acentos de uma string (NFD + regex) e converte para minúsculo.
+ *   Recebe uma string e devolve sem acentos (NFD + regex), em minúsculo.
  */
 function removeAcentos(str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -94,6 +94,8 @@ function carregarContratos(lista) {
 
 function verDetalhes(index) {
   const contrato = todosContratos[index];
+  // Teste rápido: logar no console
+  console.log("Chamou verDetalhes para índice", index, contrato);
 
   document.getElementById("det-nickname").textContent = contrato.nickname || "-";
   document.getElementById("det-purchaseprice").textContent = contrato.purchaseprice || "-";
@@ -132,7 +134,7 @@ document.getElementById("filtro").addEventListener("input", e => {
   carregarContratos(filtrados);
 });
 
-// URL pública do CSV da aba "Contratos" (publicada em "Publicar na web → CSV")
+// URL pública do CSV da aba “Contratos” (Publicar na web → CSV)
 const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT4-Byvx6MozOO0BkbOT4V60ekea-cr0Cywf_8wvHSEno2RUW8luLJG3C5RpSjKZK8tZx8GFaXtjVhg/pub?gid=0&single=true&output=csv";
 
 fetch(URL_CSV)
