@@ -145,4 +145,3 @@ fetch(URL_CSV)
   .catch(error => {
     console.error("Erro ao carregar CSV:", error);
   });
-
