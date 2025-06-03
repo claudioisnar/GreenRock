@@ -100,7 +100,7 @@ function carregarContratos(lista) {
     tbody.appendChild(tr);
   });
 
-  // Armazena localmente para que o filtro funcione
+  // Armazena localmente para uso no detalhamento
   todosContratos = lista;
 }
 
@@ -136,26 +136,8 @@ function fecharDetalhes() {
   document.getElementById("detalhes").classList.add("hidden");
 }
 
-// Filtro de texto
-document.getElementById("filtro").addEventListener("input", e => {
-  const termo = e.target.value.toLowerCase().trim();
-
-  // Se o campo estiver vazio, exibe todos
-  if (!termo) {
-    carregarContratos(todosContratos);
-    return;
-  }
-
-  // Filtra por qualquer um dos campos principais
-  const filtrados = todosContratos.filter(c =>
-    (c.nickname       || "").toLowerCase().includes(termo) ||
-    (c.purchaseprice  || "").toLowerCase().includes(termo) ||
-    (c.date           || "").toLowerCase().includes(termo) ||
-    (c.adress         || "").toLowerCase().includes(termo) ||
-    (c.status         || "").toLowerCase().includes(termo)
-  );
-  carregarContratos(filtrados);
-});
+// *****************************************
+// NO FILTER CODE ANYMORE: não há mais listener de filtro aqui
 
 // URL pública do CSV (publicada em "Arquivo → Compartilhar → Publicar na web → CSV")
 const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT4-Byvx6MozOO0BkbOT4V60ekea-cr0Cywf_8wvHSEno2RUW8luLJG3C5RpSjKZK8tZx8GFaXtjVhg/pub?gid=0&single=true&output=csv";
@@ -170,32 +152,20 @@ fetch(URL_CSV)
       return;
     }
 
-    // A primeira linha do CSV é o cabeçalho
-    // Exemplo de cabeçalho: ["Nick Name","Purchase Price","Link Agreement","Link Sheet","Date","Adress","Status","Incentive", ...]
+    // A primeira linha do CSV é o cabeçalho original
+    // Exemplo: ["Nick Name","Purchase Price","Link Agreement","Link Sheet","Date","Adress","Status","Incentive", ...]
     const cabecalhos = linhas[0].map(col =>
       removeAcentosENormaliza(col.trim())
     );
-    // Agora, por exemplo:
-    //   "Nick Name"       → "nickname"
-    //   "Purchase Price"  → "purchaseprice"
-    //   "Link Agreement"  → "linkagreement"
-    //   "Link Sheet"      → "linksheet"
-    //   "Date"            → "date"
-    //   "Adress"          → "adress"
-    //   "Status"          → "status"
-    //   "Incentive"       → "incentive"
-    //   etc.
-
-    // As linhas seguintes contêm os dados
     const dadosLinhas = linhas.slice(1);
 
-    // Monta um array de objetos mapeando cada célula ao seu cabeçalho
+    // Monta array de objetos mapeando cada coluna pelo seu cabeçalho normalizado
     const contratos = dadosLinhas.map(fields => {
       const obj = {};
-      cabecalhos.forEach((coluna, idx) => {
-        obj[coluna] = fields[idx] || "";
+      cabecalhos.forEach((chave, idx) => {
+        obj[chave] = fields[idx] || "";
       });
-      // Retorna apenas os campos que usamos no front-end
+      // Retorna apenas os campos usados no front-end
       return {
         nickname:           obj.nickname,
         purchaseprice:      obj.purchaseprice,
