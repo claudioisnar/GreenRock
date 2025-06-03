@@ -1,11 +1,5 @@
 let todosContratos = [];
 
-/**
- * parseCSV(textoCSV):
- *   Recebe todo o conteúdo de um CSV (como string) e retorna um array
- *   de “linhas”, onde cada linha é um array de campos.
- *   Respeita aspas para valores com vírgulas internas.
- */
 function parseCSV(textoCSV) {
   const linhas = [];
   const chars = textoCSV.split('');
@@ -22,8 +16,7 @@ function parseCSV(textoCSV) {
       if (c === '"' && !dentroAspas) {
         dentroAspas = true;
         i++;
-      }
-      else if (c === '"' && dentroAspas) {
+      } else if (c === '"' && dentroAspas) {
         if (i + 1 < chars.length && chars[i + 1] === '"') {
           campo += '"';
           i += 2;
@@ -31,21 +24,18 @@ function parseCSV(textoCSV) {
           dentroAspas = false;
           i++;
         }
-      }
-      else if (c === ',' && !dentroAspas) {
+      } else if (c === ',' && !dentroAspas) {
         linha.push(campo);
         campo = '';
         i++;
-      }
-      else if ((c === '\r' || c === '\n') && !dentroAspas) {
+      } else if ((c === '\r' || c === '\n') && !dentroAspas) {
         linha.push(campo);
         campo = '';
         while (i < chars.length && (chars[i] === '\r' || chars[i] === '\n')) {
           i++;
         }
         break;
-      }
-      else {
+      } else {
         campo += c;
         i++;
       }
@@ -64,12 +54,8 @@ function parseCSV(textoCSV) {
   return linhas;
 }
 
-/**
- * removeAcentos(str):
- *   Recebe uma string e devolve sem acentos (NFD + regex), em minúsculo.
- */
 function removeAcentos(str) {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return str.normalize("NFD").replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 }
 
 function carregarContratos(lista) {
@@ -94,15 +80,12 @@ function carregarContratos(lista) {
 
 function verDetalhes(index) {
   const contrato = todosContratos[index];
-  // Teste rápido: logar no console
-  console.log("Chamou verDetalhes para índice", index, contrato);
 
   document.getElementById("det-nickname").textContent = contrato.nickname || "-";
   document.getElementById("det-purchaseprice").textContent = contrato.purchaseprice || "-";
   document.getElementById("det-date").textContent = contrato.date || "-";
   document.getElementById("det-adress").textContent = contrato.adress || "-";
   document.getElementById("det-status").textContent = contrato.status || "-";
-
   document.getElementById("det-incentive").textContent = contrato.incentive || "-";
   document.getElementById("det-financedprice").textContent = contrato.financedprice || "-";
   document.getElementById("det-downpayment").textContent = contrato.downpayment || "-";
@@ -115,6 +98,7 @@ function verDetalhes(index) {
 
   document.getElementById("link-planilha").href = contrato.linkplanilha || "#";
   document.getElementById("link-pdf").href = contrato.linkpdf || "#";
+
   document.getElementById("detalhes").classList.remove("hidden");
 }
 
@@ -134,7 +118,6 @@ document.getElementById("filtro").addEventListener("input", e => {
   carregarContratos(filtrados);
 });
 
-// URL pública do CSV da aba “Contratos” (Publicar na web → CSV)
 const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT4-Byvx6MozOO0BkbOT4V60ekea-cr0Cywf_8wvHSEno2RUW8luLJG3C5RpSjKZK8tZx8GFaXtjVhg/pub?gid=0&single=true&output=csv";
 
 fetch(URL_CSV)
@@ -146,15 +129,13 @@ fetch(URL_CSV)
       return;
     }
 
-    const cabeçalhosOriginais = linhas[0].map(col =>
-      removeAcentos(col.trim()).replace(/[^a-z0-9]/g, '')
-    );
-    const linhasDados = linhas.slice(1);
+    const cabecalhos = linhas[0].map(col => removeAcentos(col.trim()));
+    const dados = linhas.slice(1);
 
-    const contratos = linhasDados.map(fields => {
+    const contratos = dados.map(colunas => {
       const obj = {};
-      cabeçalhosOriginais.forEach((coluna, idx) => {
-        obj[coluna] = fields[idx] || "";
+      cabecalhos.forEach((coluna, idx) => {
+        obj[coluna] = colunas[idx] || "";
       });
       return {
         nickname: obj.nickname,
@@ -171,8 +152,8 @@ fetch(URL_CSV)
         interestrateyear: obj.interestrateyear,
         terminyearloan: obj.terminyearloan,
         mortagepayment: obj.mortagepayment,
-        linkpdf: obj.linkpdf,
-        linkplanilha: obj.linkplanilha
+        linkpdf: obj.linkagreement,
+        linkplanilha: obj.linksheet
       };
     });
 
@@ -181,3 +162,4 @@ fetch(URL_CSV)
   .catch(error => {
     console.error("Erro ao carregar CSV:", error);
   });
+
