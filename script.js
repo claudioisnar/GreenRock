@@ -54,10 +54,6 @@ function parseCSV(textoCSV) {
   return linhas;
 }
 
-function removeAcentos(str) {
-  return str.normalize("NFD").replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-}
-
 function carregarContratos(lista) {
   const tbody = document.querySelector("#tabela-contratos tbody");
   tbody.innerHTML = "";
@@ -65,10 +61,10 @@ function carregarContratos(lista) {
   lista.forEach((contrato, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${contrato.nickname || "-"}</td>
-      <td>${contrato.purchaseprice || "-"}</td>
-      <td>${contrato.date || "-"}</td>
-      <td>${contrato.adress || "-"}</td>
+      <td>${contrato.apelido || "-"}</td>
+      <td>${contrato.valor || "-"}</td>
+      <td>${contrato.data || "-"}</td>
+      <td>${contrato.endereco || "-"}</td>
       <td>${contrato.status || "-"}</td>
       <td><button onclick="verDetalhes(${index})">Detail</button></td>
     `;
@@ -80,25 +76,13 @@ function carregarContratos(lista) {
 
 function verDetalhes(index) {
   const contrato = todosContratos[index];
-
-  document.getElementById("det-nickname").textContent = contrato.nickname || "-";
-  document.getElementById("det-purchaseprice").textContent = contrato.purchaseprice || "-";
-  document.getElementById("det-date").textContent = contrato.date || "-";
-  document.getElementById("det-adress").textContent = contrato.adress || "-";
+  document.getElementById("det-apelido").textContent = contrato.apelido || "-";
+  document.getElementById("det-valor").textContent = contrato.valor || "-";
+  document.getElementById("det-data").textContent = contrato.data || "-";
+  document.getElementById("det-endereco").textContent = contrato.endereco || "-";
   document.getElementById("det-status").textContent = contrato.status || "-";
-  document.getElementById("det-incentive").textContent = contrato.incentive || "-";
-  document.getElementById("det-financedprice").textContent = contrato.financedprice || "-";
-  document.getElementById("det-downpayment").textContent = contrato.downpayment || "-";
-  document.getElementById("det-financedamount").textContent = contrato.financedamount || "-";
-  document.getElementById("det-closingcosts").textContent = contrato.closingcosts || "-";
-  document.getElementById("det-acquisitionexpense").textContent = contrato.acquisitionexpense || "-";
-  document.getElementById("det-interestrateyear").textContent = contrato.interestrateyear || "-";
-  document.getElementById("det-terminyearloan").textContent = contrato.terminyearloan || "-";
-  document.getElementById("det-mortagepayment").textContent = contrato.mortagepayment || "-";
-
   document.getElementById("link-planilha").href = contrato.linkplanilha || "#";
   document.getElementById("link-pdf").href = contrato.linkpdf || "#";
-
   document.getElementById("detalhes").classList.remove("hidden");
 }
 
@@ -107,12 +91,16 @@ function fecharDetalhes() {
 }
 
 document.getElementById("filtro").addEventListener("input", e => {
-  const termo = e.target.value.toLowerCase();
+  const termo = e.target.value.toLowerCase().trim();
+  if (!termo) {
+    carregarContratos(todosContratos);
+    return;
+  }
   const filtrados = todosContratos.filter(c =>
-    (c.nickname || "").toLowerCase().includes(termo) ||
-    (c.purchaseprice || "").toLowerCase().includes(termo) ||
-    (c.date || "").toLowerCase().includes(termo) ||
-    (c.adress || "").toLowerCase().includes(termo) ||
+    (c.apelido || "").toLowerCase().includes(termo) ||
+    (c.valor || "").toLowerCase().includes(termo) ||
+    (c.data || "").toLowerCase().includes(termo) ||
+    (c.endereco || "").toLowerCase().includes(termo) ||
     (c.status || "").toLowerCase().includes(termo)
   );
   carregarContratos(filtrados);
@@ -124,34 +112,29 @@ fetch(URL_CSV)
   .then(response => response.text())
   .then(csvText => {
     const linhas = parseCSV(csvText.trim());
+
     if (linhas.length < 2) {
-      console.error("CSV vazio ou sem dados.");
+      console.error("CSV parece vazio ou não contém dados");
       return;
     }
 
-    const cabecalhos = linhas[0].map(col => removeAcentos(col.trim()));
-    const dados = linhas.slice(1);
+    const cabecalhoOriginal = linhas[0].map(col =>
+      col.trim().toLowerCase().replace(/\s/g, '')
+    );
 
-    const contratos = dados.map(colunas => {
+    const dadosLinhas = linhas.slice(1);
+
+    const contratos = dadosLinhas.map(colunas => {
       const obj = {};
-      cabecalhos.forEach((coluna, idx) => {
-        obj[coluna] = colunas[idx] || "";
+      cabecalhoOriginal.forEach((chave, idx) => {
+        obj[chave] = colunas[idx] || "";
       });
       return {
-        nickname: obj.nickname,
-        purchaseprice: obj.purchaseprice,
-        date: obj.date,
-        adress: obj.adress,
+        apelido: obj.apelido,
+        valor: obj.valor,
+        data: obj.data,
+        endereco: obj.adress || obj.endereco || "",
         status: obj.status,
-        incentive: obj.incentive,
-        financedprice: obj.financedprice,
-        downpayment: obj.downpayment,
-        financedamount: obj.financedamount,
-        closingcosts: obj.closingcosts,
-        acquisitionexpense: obj.acquisitionexpense,
-        interestrateyear: obj.interestrateyear,
-        terminyearloan: obj.terminyearloan,
-        mortagepayment: obj.mortagepayment,
         linkpdf: obj.linkagreement,
         linkplanilha: obj.linksheet
       };
