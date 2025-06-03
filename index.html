@@ -2,15 +2,13 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acquisition Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Green Rock</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Caso você ainda não tenha um style.css, adicione pelo menos esta classe: */
     .hidden {
       display: none;
     }
-    /* Exemplo básico de estilo para tabela: */
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
@@ -83,26 +81,28 @@
       </tr>
     </thead>
     <tbody>
-      <!-- As linhas serão geradas dinamicamente pelo script.js -->
+      <!-- As linhas serão geradas pelo script.js -->
     </tbody>
   </table>
 
   <div id="detalhes" class="hidden">
     <h2>Detail</h2>
-    <p><strong>Nick Name:</strong> <span id="det-apelido"></span></p>
-    <p><strong>Purchase Price:</strong> <span id="det-valor"></span></p>
-    <p><strong>Date:</strong> <span id="det-data"></span></p>
-    <p><strong>Adress:</strong> <span id="det-endereco"></span></p>
+    <p><strong>Nick Name:</strong> <span id="det-nickname"></span></p>
+    <p><strong>Purchase Price:</strong> <span id="det-purchaseprice"></span></p>
+    <p><strong>Date:</strong> <span id="det-date"></span></p>
+    <p><strong>Adress:</strong> <span id="det-adress"></span></p>
     <p><strong>Status:</strong> <span id="det-status"></span></p>
-    <p><strong>Incentive:</strong> <span id="det-status"></span></p>
-    <p><strong>Financed Price:</strong> <span id="det-status"></span></p>
-    <p><strong>Down Payment:</strong> <span id="det-status"></span></p>
-    <p><strong>Financed Amount:</strong> <span id="det-status"></span></p>
-    <p><strong>Closing Costs:</strong> <span id="det-status"></span></p>
-    <p><strong>Acquisition Expense:</strong> <span id="det-status"></span></p>
-    <p><strong>Interest rate year (%):</strong> <span id="det-status"></span></p>
-    <p><strong>Term in years loan:</strong> <span id="det-status"></span></p>
-    <p><strong>Mortage payment:</strong> <span id="det-status"></span></p>
+
+    <p><strong>Incentive:</strong> <span id="det-incentive"></span></p>
+    <p><strong>Financed Price:</strong> <span id="det-financedprice"></span></p>
+    <p><strong>Down Payment:</strong> <span id="det-downpayment"></span></p>
+    <p><strong>Financed Amount:</strong> <span id="det-financedamount"></span></p>
+    <p><strong>Closing Costs:</strong> <span id="det-closingcosts"></span></p>
+    <p><strong>Acquisition Expense:</strong> <span id="det-acquisitionexpense"></span></p>
+    <p><strong>Interest rate year (%):</strong> <span id="det-interestrateyear"></span></p>
+    <p><strong>Term in years loan:</strong> <span id="det-terminyearloan"></span></p>
+    <p><strong>Mortage payment:</strong> <span id="det-mortagepayment"></span></p>
+
     <p>
       <a id="link-planilha" href="#" target="_blank">📄 Go to Sheets</a><br>
       <a id="link-pdf" href="#" target="_blank">📑 Go to Agreement PDF</a>
@@ -110,7 +110,7 @@
     <button onclick="fecharDetalhes()">Close</button>
   </div>
 
-  <!-- Já deve existir o script.js na mesma pasta -->
+  <!-- Carrega o script.js (deve estar na mesma pasta) -->
   <script src="script.js"></script>
 </body>
 </html>
